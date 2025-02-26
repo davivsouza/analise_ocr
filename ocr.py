@@ -1,4 +1,3 @@
-
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
@@ -6,9 +5,9 @@ from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 import re
 import datetime
-
+import os
 from services.docs_to_base64 import convert_to_base64, pdf_to_base64
-
+import json 
 load_dotenv()
 
 model = "models/gemini-2.0-flash"
@@ -22,7 +21,7 @@ prompt_template = PromptTemplate(
     template=(
         "Você deve identificar o tipo de documento fornecido e extrair todas as informações contidas nele. "
         "Responda **apenas** com um JSON válido, sem qualquer explicação. "
-        "Se for um comprovante de residência, extraia apenas o endereço. "
+        "Se for um comprovante de residência (Conta de Energia Eletrica, Conta de Água, Fatura, Boleto), extraia apenas o endereço. "
         "Se for CNH, RG ou CRLV, capture todas as informações relevantes. "
         "Não omita nenhum dado e preserve a formatação conforme encontrada no documento. "
         "Aqui está o formato esperado:\n\n"
@@ -72,5 +71,5 @@ def classify_and_extract_data(file_path: str):
         json.dump(parsed_data, f, indent=4, ensure_ascii=False)
 
 
-file_path = "./docs/seu_arquivo.pdf"
+file_path = "./docs/comprovante_residencia.png"
 classify_and_extract_data(file_path)
